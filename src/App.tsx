@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from 'react-bootstrap';
 import logo from './logo.svg';
 import './App.css';
 
@@ -19,6 +20,9 @@ function App() {
           Learn React
         </a>
       </header>
+      <Button as="a" variant="primary">
+        Button as link
+      </Button>
     </div>
   );
 }
