@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, Container, Spinner, Alert, Placeholder, Table } from 'react-bootstrap';
+import { Button, Container, Spinner, Alert, Placeholder, Row, Col, Table } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { useNavigate } from 'react-router-dom';
 import { getUsers } from '../services/users.service';
@@ -93,16 +93,27 @@ const HomePage: React.FC = () => {
                     {columns.map((column, index) => <th key={index}>{column.text}</th>)}
                 </tr>
                 </thead>
-                <tbody>
-                {skeletonRows}
-                </tbody>
+                <tbody>{skeletonRows}</tbody>
             </Table>
         );
     };
 
     return (
         <Container>
-            <h1>Users</h1>
+            <Row className="align-items-center">
+                <Col>
+                    <h1>Users</h1>
+                </Col>
+                <Col className="text-end">
+                    <Button
+                        variant="danger"
+                        onClick={handleLogout}
+                        disabled={logoutStatus === Status.Loading || logoutStatus === Status.Succeeded}
+                    >
+                        {logoutStatus === Status.Loading ? (<Spinner animation="border" size="sm" />) : ('Logout')}
+                    </Button>
+                </Col>
+            </Row>
             {status === Status.Loading ? (
                 renderSkeleton()
             ) : status === Status.Failed ? (
@@ -115,19 +126,6 @@ const HomePage: React.FC = () => {
                     keyField="id"
                     data={users}
                     columns={columns}
-                    caption={
-                        <Button
-                            variant="danger"
-                            onClick={handleLogout}
-                            disabled={logoutStatus === Status.Loading || logoutStatus === Status.Succeeded}
-                        >
-                            {logoutStatus === Status.Loading ? (
-                                <Spinner animation="border" size="sm" />
-                            ) : (
-                                'Logout'
-                            )}
-                        </Button>
-                    }
                     selectRow={{
                         mode: 'checkbox',
                         clickToSelect: true,
