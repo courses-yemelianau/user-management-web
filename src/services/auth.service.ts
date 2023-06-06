@@ -1,15 +1,16 @@
 import axios from '../config';
-import { CreateUserDto } from '../dtos/users.dto';
+import { CreateUserDto, LoginUserDto } from '../dtos/users.dto';
+import { Response } from '../interfaces/response.interface';
 import { User } from '../interfaces/users.interface';
 
 export const signUp = (userData: CreateUserDto) => {
-    return axios.post<User>(`/signup`, userData);
+    return axios.post<Response<User>>(`/signup`, userData);
 };
 
-export const logIn = (userData: CreateUserDto) => {
-    return axios.post<{ cookie: string; findUser: User }>(`/login`, userData);
+export const logIn = (userData: LoginUserDto) => {
+    return axios.post<Response<User>>(`/login`, userData);
 };
 
 export const logOut = () => {
-    return axios.post<User>(`/logout`);
+    return axios.post<Response<User>>(`/logout`);
 };
