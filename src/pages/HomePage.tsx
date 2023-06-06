@@ -1,25 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Table } from 'react-bootstrap';
-
-interface User {
-    id: number;
-    name: string;
-    email: string;
-    registrationDate: string;
-    lastLoginDate: string;
-    status: string;
-}
+import { getUsers } from '../services/users.service';
 
 const HomePage: React.FC = () => {
-    const [users, setUsers] = useState<User[]>([]);
+    const [users, setUsers] = useState<any>([]);
 
     useEffect(() => {
-        // Simulated API call to fetch users data
         const fetchUsers = async () => {
             try {
-                const response = await fetch('/api/users'); // Replace with your API endpoint
-                const data = await response.json();
-                setUsers(data);
+                const response = await getUsers(); // Replace with your API endpoint
+                setUsers(response.data.data);
             } catch (error) {
                 console.error('Error fetching users:', error);
             }
@@ -43,7 +33,7 @@ const HomePage: React.FC = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {users.map((user) => (
+                {users.map((user: any) => (
                     <tr key={user.id}>
                         <td>{user.id}</td>
                         <td>{user.name}</td>
