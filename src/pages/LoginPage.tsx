@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Form, Button, Container, Spinner, Alert } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
@@ -6,8 +6,10 @@ import * as Yup from 'yup';
 import { LoginUserDto } from '../dtos/users.dto';
 import { logIn } from '../services/auth.service';
 import { Status } from '../constants';
+import { Context } from '../context';
 
 const LoginPage: React.FC = () => {
+    const { login } = useContext(Context);
     const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState('');
     const [status, setStatus] = useState(Status.Idle);
@@ -36,8 +38,9 @@ const LoginPage: React.FC = () => {
             setErrorMessage('');
 
             logIn(values)
-                .then(() => {
+                .then(({ data: { data } }) => {
                     setStatus(Status.Succeeded);
+                    login(data.email);
                     navigate('/home');
                 })
                 .catch((error) => {
