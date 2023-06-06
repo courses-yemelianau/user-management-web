@@ -11,6 +11,6 @@ export const logIn = (userData: LoginUserDto) => {
     return axios.post<Response<User>>(`/login`, userData, { withCredentials: true });
 };
 
-export const logOut = () => {
-    return axios.post<Response<User>>(`/logout`);
+export const logOut = (userData: User) => {
+    return axios.post<Response<User>>(`/logout`, userData, { withCredentials: true });
 };
