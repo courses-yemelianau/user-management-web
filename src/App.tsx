@@ -1,30 +1,31 @@
 import React from 'react';
-import { Button } from 'react-bootstrap';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import RegistrationPage from './pages/RegistrationPage';
+import LoginPage from './pages/LoginPage';
+import HomePage from './pages/HomePage';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-      <Button as="a" variant="primary">
-        Button as link
-      </Button>
-    </div>
-  );
-}
+const App: React.FC = () => {
+    const isAuthenticated = false;
+
+    return (
+        <Router>
+            <Routes>
+                {isAuthenticated ? (
+                    <>
+                        <Route path="/" element={<Navigate to="/home" />} />
+                        <Route path="/home" element={<HomePage />} />
+                    </>
+                ) : (
+                    <>
+                        <Route path="/" element={<Navigate to="/login" />} />
+                        <Route path="/register" element={<RegistrationPage />} />
+                        <Route path="/login" element={<LoginPage />} />
+                    </>
+                )}
+                <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+        </Router>
+    );
+};
 
 export default App;
