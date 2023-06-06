@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Alert, Button, Container, Form, Spinner } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { CreateUserDto } from '../dtos/users.dto';
@@ -130,6 +130,10 @@ const RegistrationPage = () => {
                 >
                     {status === Status.Loading ? <Spinner animation="border" size="sm" /> : 'Register'}
                 </Button>
+                <br />
+                <Alert variant="light" className="mt-3">
+                    Already have an account? <Link to="/login">Login</Link>
+                </Alert>
             </Form>
         </Container>
     );
