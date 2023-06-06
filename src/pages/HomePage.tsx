@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Button, Container, Spinner, Alert, Placeholder, Row, Col, Table } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { useNavigate } from 'react-router-dom';
+import { DateTime } from 'luxon';
 import { deleteUser, getUsers, updateUser } from '../services/users.service';
 import { logOut } from '../services/auth.service';
 import { Context } from '../context';
@@ -198,7 +199,11 @@ const HomePage: React.FC = () => {
                 <BootstrapTable
                     bootstrap4
                     keyField="id"
-                    data={users}
+                    data={users.map((user) => ({
+                        ...user,
+                        registrationDate: DateTime.fromISO(`${user.registrationDate}`).toLocaleString(DateTime.DATE_MED),
+                        lastLoginDate: DateTime.fromISO(`${user.lastLoginDate}`).toLocaleString(DateTime.DATETIME_MED)
+                    }))}
                     columns={columns}
                     caption={renderToolbar()}
                     selectRow={{
