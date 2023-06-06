@@ -105,7 +105,7 @@ const RegistrationPage = () => {
                         placeholder="Enter email"
                         value={values.email}
                         onChange={handleChange}
-                        isInvalid={!!touched.email && !!errors.email}
+                        isInvalid={touched.email && !!errors.email}
                     />
                     <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
                 </Form.Group>
@@ -118,7 +118,7 @@ const RegistrationPage = () => {
                         placeholder="Password"
                         value={values.password}
                         onChange={handleChange}
-                        isInvalid={!!touched.password && !!errors.password}
+                        isInvalid={touched.password && !!errors.password}
                     />
                     <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
                 </Form.Group>
