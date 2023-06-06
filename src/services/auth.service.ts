@@ -8,7 +8,7 @@ export const signUp = (userData: CreateUserDto) => {
 };
 
 export const logIn = (userData: LoginUserDto) => {
-    return axios.post<Response<User>>(`/login`, userData);
+    return axios.post<Response<User>>(`/login`, userData, { withCredentials: true });
 };
 
 export const logOut = () => {
