@@ -32,8 +32,22 @@ const LoginPage: React.FC = () => {
         initialValues,
         validationSchema,
         onSubmit: (values) => {
-            // Handle login logic here
-            console.log(values);
+            setStatus(Status.Loading);
+            setErrorMessage('');
+
+            logIn(values)
+                .then(() => {
+                    setStatus(Status.Succeeded);
+                    navigate('/home');
+                })
+                .catch((error) => {
+                    setStatus(Status.Failed);
+                    if (error.response && error.response.status === 409) {
+                        setErrorMessage('Invalid email or password');
+                    } else {
+                        setErrorMessage('An error occurred. Please try again.');
+                    }
+                });
         }
     });
 
@@ -87,7 +101,7 @@ const LoginPage: React.FC = () => {
                 >
                     {status === Status.Loading ? <Spinner animation="border" size="sm" /> : 'Login'}
                 </Button>
-                <br/>
+                <br />
                 <Alert variant="light" className="mt-3">
                     Don't have an account? <Link to="/register">Register</Link>
                 </Alert>
