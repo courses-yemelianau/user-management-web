@@ -49,7 +49,11 @@ const LoginPage: React.FC = () => {
         <Container>
             <h1>Login</h1>
             <Form onSubmit={handleSubmit}>
-                {/*showErrorMessage*/}
+                {status === Status.Failed && (
+                    <Alert variant="danger" onClose={() => setStatus(Status.Idle)} dismissible>
+                        {errorMessage}
+                    </Alert>
+                )}
                 <Form.Group controlId="email">
                     <Form.Label>Email</Form.Label>
                     <Form.Control
