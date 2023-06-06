@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, Container, Spinner, Alert } from 'react-bootstrap';
+import { Button, Container, Spinner, Alert, Placeholder, Table } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { useNavigate } from 'react-router-dom';
 import { getUsers } from '../services/users.service';
@@ -19,11 +19,11 @@ const HomePage: React.FC = () => {
     const fetchUsers = () => {
         setStatus(Status.Loading);
         getUsers()
-            .then(response => {
+            .then((response) => {
                 setStatus(Status.Succeeded);
                 setUsers(response.data.data);
             })
-            .catch(error => {
+            .catch((error) => {
                 setStatus(Status.Failed);
                 setMessage(error.message);
             });
@@ -75,12 +75,37 @@ const HomePage: React.FC = () => {
         text: 'Status'
     }];
 
+    const renderSkeleton = () => {
+        const skeletonRows = Array.from({ length: 5 }).map((_, index) => (
+            <tr key={index}>
+                {columns.map((_, columnIndex) => (
+                    <td key={columnIndex}>
+                        <Placeholder xs={6} style={{ width: '100%', height: '16px' }} />
+                    </td>
+                ))}
+            </tr>
+        ));
+
+        return (
+            <Table striped bordered>
+                <thead>
+                <tr>
+                    {columns.map((column, index) => <th key={index}>{column.text}</th>)}
+                </tr>
+                </thead>
+                <tbody>
+                {skeletonRows}
+                </tbody>
+            </Table>
+        );
+    };
+
     return (
         <Container>
             <h1>Users</h1>
             {status === Status.Loading ? (
-                <Spinner animation="border" />
-            ) : status !== Status.Failed ? (
+                renderSkeleton()
+            ) : status === Status.Failed ? (
                 <Alert variant="danger" onClose={fetchUsers} dismissible>
                     {message || 'Something went wrong'}
                 </Alert>
