@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, Container, Spinner } from 'react-bootstrap';
+import { Button, Container, Spinner, Alert } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { useNavigate } from 'react-router-dom';
 import { getUsers } from '../services/users.service';
@@ -16,27 +16,33 @@ const HomePage: React.FC = () => {
     const [logoutStatus, setLogoutStatus] = useState(Status.Idle);
     const [message, setMessage] = useState('');
 
-    useEffect(() => {
+    const fetchUsers = () => {
         setStatus(Status.Loading);
-        getUsers().then(response => {
-            setStatus(Status.Succeeded);
-            setUsers(response.data.data);
-        }).catch(error => {
-            setStatus(Status.Failed);
-            setMessage(error.message);
-        });
-    }, []);
+        getUsers()
+            .then(response => {
+                setStatus(Status.Succeeded);
+                setUsers(response.data.data);
+            })
+            .catch(error => {
+                setStatus(Status.Failed);
+                setMessage(error.message);
+            });
+    };
+
+    useEffect(fetchUsers, []);
 
     const handleLogout = () => {
         setLogoutStatus(Status.Loading);
         const user = getUser();
-        user && logOut(user).then(logout)
+        user && logOut(user)
+            .then(logout)
             .then(() => {
                 setLogoutStatus(Status.Succeeded);
             })
             .catch(() => {
                 setLogoutStatus(Status.Failed);
-            }).finally(() => {
+            })
+            .finally(() => {
                 navigate('/login');
             });
     };
@@ -72,27 +78,39 @@ const HomePage: React.FC = () => {
     return (
         <Container>
             <h1>Users</h1>
-            <BootstrapTable
-                bootstrap4
-                keyField="id"
-                data={users}
-                columns={columns}
-                caption={(
-                    <Button
-                        variant="danger"
-                        onClick={handleLogout}
-                        disabled={logoutStatus === Status.Loading || logoutStatus === Status.Succeeded}
-                    >
-                        {logoutStatus === Status.Loading ? <Spinner animation="border" size="sm" /> : 'Logout'}
-                    </Button>
-                )}
-                selectRow={{
-                    mode: 'checkbox',
-                    clickToSelect: true,
-                    onSelect: handleSelect,
-                    onSelectAll: handleSelectAll
-                }}
-            />
+            {status === Status.Loading ? (
+                <Spinner animation="border" />
+            ) : status !== Status.Failed ? (
+                <Alert variant="danger" onClose={fetchUsers} dismissible>
+                    {message || 'Something went wrong'}
+                </Alert>
+            ) : (
+                <BootstrapTable
+                    bootstrap4
+                    keyField="id"
+                    data={users}
+                    columns={columns}
+                    caption={
+                        <Button
+                            variant="danger"
+                            onClick={handleLogout}
+                            disabled={logoutStatus === Status.Loading || logoutStatus === Status.Succeeded}
+                        >
+                            {logoutStatus === Status.Loading ? (
+                                <Spinner animation="border" size="sm" />
+                            ) : (
+                                'Logout'
+                            )}
+                        </Button>
+                    }
+                    selectRow={{
+                        mode: 'checkbox',
+                        clickToSelect: true,
+                        onSelect: handleSelect,
+                        onSelectAll: handleSelectAll
+                    }}
+                />
+            )}
         </Container>
     );
 };
