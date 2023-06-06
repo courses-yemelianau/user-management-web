@@ -40,7 +40,7 @@ const LoginPage: React.FC = () => {
             logIn(values)
                 .then(({ data: { data } }) => {
                     setStatus(Status.Succeeded);
-                    login(data.email);
+                    login(data);
                     navigate('/home');
                 })
                 .catch((error) => {
