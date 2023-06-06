@@ -1,44 +1,94 @@
 import React, { useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Container, Spinner, Alert } from 'react-bootstrap';
+import { Link, useNavigate } from 'react-router-dom';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { LoginUserDto } from '../dtos/users.dto';
+import { logIn } from '../services/auth.service';
+import { Status } from '../constants';
 
 const LoginPage: React.FC = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = useState('');
+    const [status, setStatus] = useState(Status.Idle);
 
-    const handleLogin = (e: React.FormEvent) => {
-        e.preventDefault();
-        // Handle login logic here
+    const initialValues: LoginUserDto = {
+        email: '',
+        password: ''
     };
 
+    const validationSchema = Yup.object<LoginUserDto>({
+        email: Yup
+            .string()
+            .email('Invalid email address')
+            .required('Email is required')
+            .matches(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Invalid email address'),
+        password: Yup
+            .string()
+            .required('Password is required')
+    });
+
+    const formik = useFormik({
+        initialValues,
+        validationSchema,
+        onSubmit: (values) => {
+            // Handle login logic here
+            console.log(values);
+        }
+    });
+
+    const {
+        handleSubmit,
+        handleChange,
+        values,
+        touched,
+        errors
+    } = formik;
+
     return (
-        <div>
+        <Container>
             <h1>Login</h1>
-            <Form onSubmit={handleLogin}>
+            <Form onSubmit={handleSubmit}>
+                {/*showErrorMessage*/}
                 <Form.Group controlId="email">
-                    <Form.Label>Email address</Form.Label>
+                    <Form.Label>Email</Form.Label>
                     <Form.Control
                         type="email"
+                        name="email"
                         placeholder="Enter email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        value={values.email}
+                        onChange={handleChange}
+                        isInvalid={touched.email && !!errors.email}
                     />
+                    <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group controlId="password">
                     <Form.Label>Password</Form.Label>
                     <Form.Control
                         type="password"
+                        name="password"
                         placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        value={values.password}
+                        onChange={handleChange}
+                        isInvalid={touched.password && !!errors.password}
                     />
+                    <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
                 </Form.Group>
-
-                <Button variant="primary" type="submit">
-                    Login
+                <br />
+                <Button
+                    variant="primary"
+                    type="submit"
+                    disabled={status === Status.Loading || status === Status.Succeeded}
+                >
+                    {status === Status.Loading ? <Spinner animation="border" size="sm" /> : 'Login'}
                 </Button>
+                <br/>
+                <Alert variant="light" className="mt-3">
+                    Don't have an account? <Link to="/register">Register</Link>
+                </Alert>
             </Form>
-        </div>
+        </Container>
     );
 };
 
