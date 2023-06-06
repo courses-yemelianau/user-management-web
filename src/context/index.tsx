@@ -1,9 +1,11 @@
 import { createContext, FC, ReactNode, useState } from 'react';
+import { User } from '../interfaces/users.interface';
 
 interface MyContextProps {
     isAuth: boolean;
-    login: (user: string) => void;
+    login: (user: User) => void;
     logout: () => void;
+    getUser: () => User | null;
 }
 
 interface MyProviderProps {
@@ -13,14 +15,23 @@ interface MyProviderProps {
 const Context = createContext<MyContextProps>({
     isAuth: false,
     login: () => {},
-    logout: () => {}
+    logout: () => {},
+    getUser: () => null
 });
 
 const Provider: FC<MyProviderProps> = ({ children }) => {
-    const [isAuth, setIsAuth] = useState(!!sessionStorage.getItem('user'));
+    const getUser = (): User | null => {
+        try {
+            return JSON.parse(sessionStorage.getItem('user')!);
+        } catch (error) {
+            return null;
+        }
+    };
 
-    const login = (user: string) => {
-        sessionStorage.setItem('user', user);
+    const [isAuth, setIsAuth] = useState(!!getUser());
+
+    const login = (user: User) => {
+        sessionStorage.setItem('user', JSON.stringify(user));
         setIsAuth(true);
     };
 
@@ -33,7 +44,8 @@ const Provider: FC<MyProviderProps> = ({ children }) => {
         <Context.Provider value={{
             isAuth,
             login,
-            logout
+            logout,
+            getUser
         }}>
             {children}
         </Context.Provider>
