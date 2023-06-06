@@ -1,15 +1,16 @@
 import axios from '../config';
 import { User } from '../interfaces/users.interface';
-import { CreateUserDto } from '../dtos/users.dto';
+import { UpdateUserDto } from '../dtos/users.dto';
+import { Response } from '../interfaces/response.interface';
 
 export const getUsers = () => {
-    return axios.get<User[]>('/users');
+    return axios.get<Response<User[]>>('/users');
 };
 
-export const updateUser = (userId: number, userData: CreateUserDto) => {
-    return axios.put<User>(`/users/${userId}`, userData);
+export const updateUser = (userId: number, userData: UpdateUserDto) => {
+    return axios.put<Response<User>>(`/users/${userId}`, userData);
 };
 
 export const deleteUser = (userId: number) => {
-    return axios.delete<User>(`/users/${userId}`);
+    return axios.delete<Response<User>>(`/users/${userId}`);
 };
