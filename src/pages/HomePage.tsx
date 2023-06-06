@@ -131,13 +131,32 @@ const HomePage: React.FC = () => {
             </tr>
         ));
 
+        const skeletonButtons = (
+            <div className="d-flex justify-content-lg-end mb-3">
+                <div>
+                    <Placeholder xs={6} style={{ width: '70px', height: '32px', marginRight: '8px' }} />
+                    <Placeholder xs={6} style={{ width: '70px', height: '32px', marginRight: '8px' }} />
+                    <Placeholder xs={6} style={{ width: '70px', height: '32px', marginRight: '8px' }} />
+                </div>
+            </div>
+        );
+
         return (
-            <Table striped bordered>
-                <thead>
-                <tr>{columns.map((column, index) => <th key={index}>{column.text}</th>)}</tr>
-                </thead>
-                <tbody>{skeletonRows}</tbody>
-            </Table>
+            <>
+                {skeletonButtons}
+                <Table striped bordered>
+                    <thead>
+                    <tr>{columns.map((column, index) => <th key={index}>{column.text}</th>)}</tr>
+                    </thead>
+                    <tbody>
+                    {skeletonRows}
+                    <tr>
+                        <td colSpan={columns.length} style={{ textAlign: 'center' }}>
+                        </td>
+                    </tr>
+                    </tbody>
+                </Table>
+            </>
         );
     };
 
