@@ -56,7 +56,7 @@ const RegistrationPage = () => {
                         setErrorMessage(`This email ${values.email} already exists`);
                     } else {
                         setShowErrorMessage(true);
-                        setErrorMessage('An error occurred. Please try again.');
+                        setErrorMessage(error.response.data.message || 'An error occurred. Please try again.');
                     }
                 });
         }

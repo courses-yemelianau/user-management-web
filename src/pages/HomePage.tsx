@@ -3,7 +3,7 @@ import { Button, Container, Spinner, Alert, Placeholder, Row, Col, Table } from 
 import BootstrapTable from 'react-bootstrap-table-next';
 import { useNavigate } from 'react-router-dom';
 import { DateTime } from 'luxon';
-import { deleteUser, getUsers, updateUser } from '../services/users.service';
+import { deleteUsers, getUsers, updateUsers } from '../services/users.service';
 import { logOut } from '../services/auth.service';
 import { Context } from '../context';
 import { User } from '../interfaces/users.interface';
@@ -18,6 +18,7 @@ const HomePage: React.FC = () => {
     const [logoutStatus, setLogoutStatus] = useState(Status.Idle);
     const [message, setMessage] = useState('');
     const isSelected = !!selectedUsers.length;
+    const selectedIds = selectedUsers.map(({ id }) => id);
 
     const fetchUsers = () => {
         setStatus(Status.Loading);
@@ -30,6 +31,7 @@ const HomePage: React.FC = () => {
                 setStatus(Status.Failed);
                 setMessage(error.message);
                 if (error.response && (error.response.status === 404 || error.response.status === 401)) {
+                    logout();
                     navigate('/login');
                 }
             });
@@ -54,37 +56,50 @@ const HomePage: React.FC = () => {
     };
 
     const handleBlockUsers = () => {
-        updateUser(selectedUsers[0].id!, { status: UserStatus.Blocked })
+        updateUsers(selectedIds, { status: UserStatus.Blocked })
             .then(() => {
                 fetchUsers();
                 setSelectedUsers([]);
             })
             .catch((error) => {
+                if (error.response && (error.response.status === 404 || error.response.status === 401)) {
+                    logout();
+                    navigate('/login');
+                }
                 setMessage(error.message);
             });
     };
 
     const handleUnblockUsers = () => {
-        updateUser(selectedUsers[0].id!, { status: UserStatus.Unblocked })
+        updateUsers(selectedIds, { status: UserStatus.Unblocked })
             .then(() => {
                 fetchUsers();
                 setSelectedUsers([]);
             })
             .catch((error) => {
+                if (error.response && (error.response.status === 404 || error.response.status === 401)) {
+                    logout();
+                    navigate('/login');
+                }
                 setMessage(error.message);
             });
     };
 
     const handleDeleteUsers = () => {
-        deleteUser(selectedUsers[0].id!)
+        deleteUsers(selectedIds)
             .then(() => {
-                if (selectedUsers[0].id! === getUser()?.id) {
+                if (selectedIds.find(id => id === getUser()?.id)) {
                     navigate('/login');
                 } else {
                     fetchUsers();
+                    setSelectedUsers([]);
                 }
             })
             .catch((error) => {
+                if (error.response && (error.response.status === 404 || error.response.status === 401)) {
+                    logout();
+                    navigate('/login');
+                }
                 setMessage(error.message);
             });
     };

@@ -46,9 +46,9 @@ const LoginPage: React.FC = () => {
                 .catch((error) => {
                     setStatus(Status.Failed);
                     if (error.response && error.response.status === 409) {
-                        setErrorMessage('Invalid email or password');
+                        setErrorMessage(error.response.data.message || 'Invalid email or password');
                     } else {
-                        setErrorMessage('An error occurred. Please try again.');
+                        setErrorMessage(error.response.data.message || 'An error occurred. Please try again.');
                     }
                 });
         }
