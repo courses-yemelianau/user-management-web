@@ -3,14 +3,16 @@ import { User } from '../interfaces/users.interface';
 import { UpdateUserDto } from '../dtos/users.dto';
 import { Response } from '../interfaces/response.interface';
 
+const path = '/users';
+
 export const getUsers = () => {
-    return axios.get<Response<User[]>>('/users', { withCredentials: true });
+    return axios.get<Response<User[]>>(`${path}`, { withCredentials: true });
 };
 
 export const updateUser = (userId: number, userData: UpdateUserDto) => {
-    return axios.put<Response<User>>(`/users/${userId}`, userData, { withCredentials: true });
+    return axios.put<Response<User>>(`${path}/${userId}`, userData, { withCredentials: true });
 };
 
 export const deleteUser = (userId: number) => {
-    return axios.delete<Response<User>>(`/users/${userId}`, { withCredentials: true });
+    return axios.delete<Response<User>>(`${path}/${userId}`, { withCredentials: true });
 };
