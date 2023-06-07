@@ -30,14 +30,14 @@ const HomePage: React.FC = () => {
             .catch((error) => {
                 setStatus(Status.Failed);
                 setMessage(error.message);
-                if (error.response && (error.response.status === 404 || error.response.status === 401)) {
+                if (error.response && (error.response.status === 404 || error.response.status === 401 || error.response.status === 403)) {
                     logout();
                     navigate('/login');
                 }
             });
     };
 
-    useEffect(fetchUsers, [navigate]);
+    useEffect(fetchUsers, [navigate, logout]);
 
     const handleLogout = () => {
         setLogoutStatus(Status.Loading);
