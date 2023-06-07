@@ -217,7 +217,7 @@ const HomePage: React.FC = () => {
                     data={users.map((user) => ({
                         ...user,
                         registrationDate: DateTime.fromISO(`${user.registrationDate}`).toLocaleString(DateTime.DATE_MED),
-                        lastLoginDate: DateTime.fromISO(`${user.lastLoginDate}`).toLocaleString(DateTime.DATETIME_MED)
+                        lastLoginDate: user.lastLoginDate ? DateTime.fromISO(`${user.lastLoginDate}`).toLocaleString(DateTime.DATETIME_MED) : '-'
                     }))}
                     columns={columns}
                     caption={renderToolbar()}
